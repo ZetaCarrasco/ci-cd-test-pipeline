@@ -1,0 +1,31 @@
+name: QA Pipeline
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  api-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout api-testing-automation
+        uses: actions/checkout@v4
+        with:
+          repository: ZetaCarrasco/api-testing-automation
+          path: api-testing-automation
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        working-directory: api-testing-automation
+        run: pip install -r requirements.txt
+
+      - name: Run API tests
+        working-directory: api-testing-automation
+        run: pytest tests/ -v
