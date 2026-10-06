@@ -71,3 +71,21 @@ jobs:
           name: playwright-report
           path: web-e2e-playwright/playwright-report/
           retention-days: 14
+
+  summary:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    needs: [api-tests, e2e-tests]
+    if: always()
+
+    steps:
+      - name: Write pipeline summary
+        run: |
+          {
+            echo "## QA Pipeline results"
+            echo ""
+            echo "| Stage | Result |"
+            echo "|---|---|"
+            echo "| API tests (pytest) | ${{ needs.api-tests.result }} |"
+            echo "| E2E tests (Playwright, Chromium) | ${{ needs.e2e-tests.result }} |"
+          } >> "$GITHUB_STEP_SUMMARY"
